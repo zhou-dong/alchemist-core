@@ -2,9 +2,14 @@
   "name": "alchemist-core",
   "version": "1.0.0",
   "description": "algorithm visualization",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhou-dong/alchemist-core.git"
   },
   "keywords": [
     "algorithm",
