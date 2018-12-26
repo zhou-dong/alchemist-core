@@ -1,6 +1,6 @@
 {
   "name": "alchemist-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "algorithm visualization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
