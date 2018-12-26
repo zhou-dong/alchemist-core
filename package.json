@@ -2,10 +2,11 @@
   "name": "alchemist-core",
   "version": "1.0.0",
   "description": "algorithm visualization",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,11 @@
     "algorithm",
     "visualization"
   ],
-  "author": "dong zhou",
-  "license": "ISC"
+  "author": "Dong Zhou",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^23.3.10",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5"
+  }
 }
