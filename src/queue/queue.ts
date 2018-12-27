@@ -1,29 +1,29 @@
-export interface IStack<T> {
-    push(item: T): T;
+export interface IQueue<T> {
+    offer(item: T): T;
     peek(): T | undefined;
-    pop(): T | undefined;
+    poll(): T | undefined;
     size(): number;
     isEmpty(): boolean;
 }
 
-export default class <T> implements IStack<T> {
+export default class Queue<T> implements IQueue<T> {
     private array: T[];
 
     constructor() {
         this.array = [];
     }
 
-    push(item: T): T {
+    offer(item: T): T {
         this.array.push(item);
         return item;
     }
 
     peek(): T | undefined {
-        return this.array[this.array.length - 1];
+        return this.array[0];
     }
 
-    pop(): T | undefined {
-        return this.array.pop();
+    poll(): T | undefined {
+        return this.array.shift();
     }
 
     size(): number {
