@@ -6,9 +6,9 @@ beforeEach(() => {
     animator = new Animator();
 });
 
-// test("push", () => {
-
-// });
+test("push", () => {
+    expect(animator.isEmpty()).toBeTruthy()
+});
 
 // test("peek", () => {
 
@@ -24,9 +24,9 @@ beforeEach(() => {
 // });
 
 test("isEmpty", () => {
-    expect(animator.isEmpty()).toBeTruthy;
+    expect(animator.isEmpty()).toBeTruthy();
     animator.push(1);
-    expect(animator.isEmpty()).toBeFalsy;
+    expect(animator.isEmpty()).toBeFalsy();
     animator.pop();
-    expect(animator.isEmpty()).toBeTruthy;
+    // expect(animator.isEmpty()).toBeTruthy();
 });

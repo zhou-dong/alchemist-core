@@ -26,7 +26,9 @@ export default class <T> implements IStack<T> {
 
     pop(): T | undefined {
         if (this.table.firstChild) {
+            console.log("before", this.table.childElementCount)
             this.table.deleteRow(0);
+            console.log("after", this.table.childElementCount)
         }
         return undefined;
     }
