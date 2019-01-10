@@ -1,4 +1,4 @@
-import { IStack } from "./stack";
+import IStack from "./stack.interface";
 
 export default class <T> implements IStack<T> {
 
@@ -17,7 +17,9 @@ export default class <T> implements IStack<T> {
 
     peek(): T | undefined {
         if (this.table.firstChild) {
-            // TODO update styles 
+            // TODO update styles
+            const content = this.table.firstChild.firstChild
+            console.log(content);
         }
         return undefined;
     }
@@ -30,11 +32,11 @@ export default class <T> implements IStack<T> {
     }
 
     size(): number {
-        throw new Error("Method not implemented.");
+        return this.table.childElementCount;
     }
 
     isEmpty(): boolean {
-        throw new Error("Method not implemented.");
+        return this.table.childElementCount === 0
     }
 
     get element() {

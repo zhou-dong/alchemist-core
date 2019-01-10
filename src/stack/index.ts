@@ -1,7 +1,8 @@
 import Actions from "../commons/actions";
 import Animatable from "../commons/animatable";
-import Stack, { IStack } from "./stack";
-import Animator from "./animator";
+import IStack from "./stack.interface";
+import Stack from "./stack";
+import Animator from "./stack.animator";
 import Animators from "../commons/animators";
 
 export default class <T> implements IStack<T>, Animatable {

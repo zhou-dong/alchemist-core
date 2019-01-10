@@ -3,7 +3,14 @@ import Animatable from "../commons/animatable";
 
 export default class <T> implements IQueue<T>, Animatable {
 
+    private queue: Queue<T>;
+
+    constructor() {
+        this.queue = new Queue();
+    }
+
     offer(item: T): T {
+        this.queue.offer(item);
         throw new Error("Method not implemented.");
     }
     peek(): T | undefined {

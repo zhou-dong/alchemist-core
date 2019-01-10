@@ -1,10 +1,4 @@
-export interface IStack<T> {
-    push(item: T): T;
-    peek(): T | undefined;
-    pop(): T | undefined;
-    size(): number;
-    isEmpty(): boolean;
-}
+import IStack from "./stack.interface";
 
 export default class <T> implements IStack<T> {
     private array: T[];
