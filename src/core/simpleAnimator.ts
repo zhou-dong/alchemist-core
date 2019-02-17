@@ -1,5 +1,6 @@
 import Iterator from "./iterator";
 import Iterable from "./iterable";
+import Animator from "./animator";
 
 export default class <T> implements Animator {
     private timerId: any;

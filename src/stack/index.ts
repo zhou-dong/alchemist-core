@@ -5,16 +5,38 @@ import Action from "../core/action";
 import Animatable from "../core/animatable";
 import Animator from "../core/animator";
 import SimpleAnimator from "../core/simpleAnimator";
+import Iterator from "../commons/iterator";
 
-export default class <P> implements IStack<P>, Animatable {
+export default class <P> implements IStack<P>, Animator {
+    play(timeout: number): void {
+        this.iterator = this.actions.iterator();
+        this.timerId = setInterval(() => {
+            if (!this.iterator.hasNext()) {
+                clearInterval(this.timerId);
+            } else {
+                this.animate(this.iterator.next());
+            }
+        }, timeout)
+    }
+    pause(): void {
+        clearInterval(this.timerId);
+    }
+    stop(): void {
+        clearInterval(this.timerId);
+        this.iterator = this.actions.iterator();
+    }
+
+    private timerId: any;
     private actions: Actions<P>;
     private stack: Stack<P>;
     private htmlStack: HTMLStack<P>;
+    private iterator: Iterator<Action<ActionType, P>>;
 
     constructor(parent: HTMLElement) {
         this.actions = new Actions();
         this.stack = new Stack();
         this.htmlStack = new HTMLStack(parent);
+        this.iterator = this.actions.iterator();
     }
 
     push(payload: P): void {
@@ -49,7 +71,7 @@ export default class <P> implements IStack<P>, Animatable {
     animate(action: Action<ActionType, P>): any {
         switch (action.type) {
             case ActionType.Push: {
-                if (action.payload) {
+                if (action.payload !== undefined) {
                     this.htmlStack.push(action.payload);
                 } else {
                     throw new Error("stack push method can not find payload.");
