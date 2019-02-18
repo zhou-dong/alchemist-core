@@ -8,7 +8,7 @@ export default class <T> extends AnimatorInterval<T> implements IStack<T> {
     private htmlStack: HTMLStack<T>;
     private actions: AnimatorActions<T>;
 
-    constructor(parent: HTMLElement, actions?: AnimatorActions<T>) {
+    constructor(parent: HTMLElement, actions?: AnimatorActions<T>, id?: string) {
         if (actions) {
             super(actions);
             this.actions = actions;
@@ -18,7 +18,7 @@ export default class <T> extends AnimatorInterval<T> implements IStack<T> {
             this.actions = newActions;
         }
         this.stack = new Stack();
-        this.htmlStack = new HTMLStack(parent);
+        this.htmlStack = new HTMLStack(parent, id);
     }
 
     push(payload: T): void {

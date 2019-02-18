@@ -3,18 +3,18 @@ import Iterator from "./iterator";
 import AnimatorAction from "./animatorAction";
 import ArrayIterator from "./arrayIterator";
 
-export default class <P> implements Iterable<AnimatorAction<P>> {
-    private actions: AnimatorAction<P>[];
+export default class <T> implements Iterable<AnimatorAction<T>> {
+    private actions: AnimatorAction<T>[];
 
     constructor() {
         this.actions = [];
     }
 
-    iterator(): Iterator<AnimatorAction<P>> {
+    iterator(): Iterator<AnimatorAction<T>> {
         return new ArrayIterator(this.actions);
     }
 
-    add(action: AnimatorAction<P>): void {
+    add(action: AnimatorAction<T>): void {
         this.actions.push(action);
     }
 }

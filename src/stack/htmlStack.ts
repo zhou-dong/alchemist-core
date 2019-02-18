@@ -1,22 +1,25 @@
 import { IStack } from "./stack";
 
-export default class <P extends any> implements IStack<P> {
+export default class <T extends any> implements IStack<T> {
     private table: HTMLTableElement;
 
-    constructor(parent: HTMLElement) {
+    constructor(parent: HTMLElement, id?: string) {
         this.table = document.createElement("TABLE") as HTMLTableElement;
+        if (id) {
+            this.table.setAttribute("id", id);
+        }
         parent.appendChild(this.table);
     }
 
-    push(payload: P): void {
+    push(payload: T): void {
         this.table.insertRow(0).insertCell(0).innerHTML = payload.toString();
     }
 
-    peek(): P {
-        return JSON.parse(this.table.rows[0].cells[0].innerHTML);
+    peek(): any {
+        return this.table.rows[0].cells[0].innerHTML;
     }
 
-    pop(): P {
+    pop(): any {
         const result = this.peek();
         this.table.deleteRow(0);
         return result;
