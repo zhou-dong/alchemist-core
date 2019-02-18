@@ -1,7 +1,7 @@
 import Iterator from "./iterator";
 
 export default class <T> implements Iterator<T> {
-    private array: T[];
+    private readonly array: T[];
     private index: number;
 
     constructor(array: T[]) {

@@ -1,18 +1,22 @@
 import Iterator from "./iterator";
 import Iterable from "./iterable";
-import Animator from "./animator";
+import AnimatorAction from "./animatorAction";
 
-export default class <T> implements Animator {
+export default interface Intervalable {
+    play(timeout: number): void;
+    pause(): void;
+    stop(): void;
+}
+
+export class AnimatorInterval<T> implements Intervalable {
     private timerId: any;
-    private iterator: Iterator<T>;
-    private iterable: Iterable<T>;
-    private animate: (t: T) => any;
+    private iterator: Iterator<AnimatorAction<T>>;
+    private readonly iterable: Iterable<AnimatorAction<T>>;
 
-    constructor(iterable: Iterable<T>, animate: (t: T) => any) {
+    constructor(iterable: Iterable<AnimatorAction<T>>) {
+        this.timerId = -1;
         this.iterable = iterable;
         this.iterator = iterable.iterator();
-        this.animate = animate;
-        this.timerId = -1;
     }
 
     play(timeout: number): void {
@@ -20,7 +24,7 @@ export default class <T> implements Animator {
             if (!this.iterator.hasNext()) {
                 clearInterval(this.timerId);
             } else {
-                this.animate(this.iterator.next());
+                this.iterator.next().animate();
             }
         }, timeout)
     }

@@ -1,99 +1,48 @@
-import Stack, { ActionType, IStack } from "./stack";
+import Stack, { IStack, PushAction, PeekAction, PopAction, SizeAction, IsEmptyAction } from "./stack";
 import HTMLStack from "./htmlStack";
-import Actions from "./actions";
-import Action from "../core/action";
-import Animatable from "../core/animatable";
-import Animator from "../core/animator";
-import SimpleAnimator from "../core/simpleAnimator";
-import Iterator from "../commons/iterator";
+import AnimatorActions from "../core/animatorActions";
+import { AnimatorInterval } from "../core/animatorInterval";
 
-export default class <P> implements IStack<P>, Animator {
-    play(timeout: number): void {
-        this.iterator = this.actions.iterator();
-        this.timerId = setInterval(() => {
-            if (!this.iterator.hasNext()) {
-                clearInterval(this.timerId);
-            } else {
-                this.animate(this.iterator.next());
-            }
-        }, timeout)
-    }
-    pause(): void {
-        clearInterval(this.timerId);
-    }
-    stop(): void {
-        clearInterval(this.timerId);
-        this.iterator = this.actions.iterator();
-    }
+export default class <T> extends AnimatorInterval<T> implements IStack<T> {
+    private stack: Stack<T>;
+    private htmlStack: HTMLStack<T>;
+    private actions: AnimatorActions<T>;
 
-    private timerId: any;
-    private actions: Actions<P>;
-    private stack: Stack<P>;
-    private htmlStack: HTMLStack<P>;
-    private iterator: Iterator<Action<ActionType, P>>;
-
-    constructor(parent: HTMLElement) {
-        this.actions = new Actions();
+    constructor(parent: HTMLElement, actions?: AnimatorActions<T>) {
+        if (actions) {
+            super(actions);
+            this.actions = actions;
+        } else {
+            const newActions = new AnimatorActions<T>();
+            super(newActions);
+            this.actions = newActions;
+        }
         this.stack = new Stack();
         this.htmlStack = new HTMLStack(parent);
-        this.iterator = this.actions.iterator();
     }
 
-    push(payload: P): void {
-        this.actions.push(payload);
+    push(payload: T): void {
+        this.actions.add(new PushAction(this.htmlStack, payload));
         this.stack.push(payload);
     }
 
-    peek(): P {
-        this.actions.peek();
+    peek(): T {
+        this.actions.add(new PeekAction(this.htmlStack));
         return this.stack.peek();
     }
 
-    pop(): P | undefined {
-        this.actions.pop();
+    pop(): T | undefined {
+        this.actions.add(new PopAction(this.htmlStack));
         return this.stack.pop();
     }
 
     size() {
-        this.actions.size();
+        this.actions.add(new SizeAction(this.htmlStack));
         return this.stack.size();
     }
 
     isEmpty() {
-        this.actions.isEmpty();
+        this.actions.add(new IsEmptyAction(this.htmlStack));
         return this.stack.isEmpty();
-    }
-
-    animator(): Animator {
-        return new SimpleAnimator<Action<ActionType, P>>(this.actions, this.animate);
-    }
-
-    animate(action: Action<ActionType, P>): any {
-        switch (action.type) {
-            case ActionType.Push: {
-                if (action.payload !== undefined) {
-                    this.htmlStack.push(action.payload);
-                } else {
-                    throw new Error("stack push method can not find payload.");
-                }
-                break;
-            }
-            case ActionType.Peek: {
-                this.htmlStack.peek();
-                break;
-            }
-            case ActionType.Pop: {
-                this.htmlStack.pop();
-                break;
-            }
-            case ActionType.Size: {
-                this.htmlStack.size();
-                break;
-            }
-            case ActionType.IsEmpty: {
-                this.htmlStack.isEmpty();
-                break;
-            }
-        }
     }
 }

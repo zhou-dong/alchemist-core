@@ -1,4 +1,3 @@
-export default interface Action<T, P> {
-    type: T;
+export default interface Action<P> {
     payload?: P;
 }

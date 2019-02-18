@@ -1,6 +1,4 @@
-export enum ActionType {
-    Push, Peek, Pop, Size, IsEmpty
-}
+import AnimatorAction from "../core/animatorAction";
 
 export interface IStack<P> {
     push(payload: P): any;
@@ -8,6 +6,74 @@ export interface IStack<P> {
     pop(): any;
     size(): any;
     isEmpty(): any;
+}
+
+export interface StackAction<P> extends AnimatorAction<P> {
+    animate(): any
+    readonly payload?: P;
+    readonly stack: IStack<P>;
+}
+
+export class PushAction<P> implements StackAction<P> {
+    payload: P;
+    stack: IStack<P>;
+
+    constructor(stack: IStack<P>, payload: P) {
+        this.stack = stack;
+        this.payload = payload;
+    }
+
+    animate() {
+        this.stack.push(this.payload);
+    }
+}
+
+export class PeekAction<P> implements StackAction<P> {
+    stack: IStack<P>;
+
+    constructor(stack: IStack<P>) {
+        this.stack = stack;
+    }
+
+    animate() {
+        this.stack.peek();
+    }
+}
+
+export class PopAction<P> implements StackAction<P> {
+    stack: IStack<P>;
+
+    constructor(stack: IStack<P>) {
+        this.stack = stack;
+    }
+
+    animate() {
+        this.stack.pop();
+    }
+}
+
+export class SizeAction<P> implements StackAction<P> {
+    stack: IStack<P>;
+
+    constructor(stack: IStack<P>) {
+        this.stack = stack;
+    }
+
+    animate() {
+        this.stack.size();
+    }
+}
+
+export class IsEmptyAction<P> implements StackAction<P> {
+    stack: IStack<P>;
+
+    constructor(stack: IStack<P>) {
+        this.stack = stack;
+    }
+
+    animate() {
+        this.stack.isEmpty();
+    }
 }
 
 export default class <P> implements IStack<P> {
