@@ -40,11 +40,11 @@ export default class <T> implements Animatable {
     stop(): void {
         clearTimeout(this.timer);
         this.timer = this.invalid;
-        this.iterator = this.actions.iterator();
     }
 
     restart(speed: number): void {
         this.stop();
+        this.iterator = this.actions.iterator();
         this.start(speed);
     }
 }
