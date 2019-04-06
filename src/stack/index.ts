@@ -4,8 +4,8 @@ import Action from "../commons/action";
 import Actions from "../commons/actions";
 
 export default class <T> extends Actions implements IStack<T> {
-    private stack: Stack<T>;
-    private htmlStack: HTMLStack<T>;
+    private readonly stack: Stack<T>;
+    private readonly htmlStack: HTMLStack<T>;
 
     constructor(parent: HTMLElement, actions?: Action[], id?: string) {
         super(actions);

@@ -1,44 +1,40 @@
-import Queue, { IQueue } from "./queue";
-import Animatable from "../commons/animatable";
+import Queue, { IQueue, OfferAction, PeekAction, PollAction, SizeAction, IsEmptyAction } from "./queue";
+import HTMLQueue from "./htmlQueue";
+import Action from "../commons/action";
+import Actions from "../commons/actions";
 
-export default class <T> implements IQueue<T>, Animatable {
+export default class <T> extends Actions implements IQueue<T> {
+    private readonly queue: Queue<T>;
+    private readonly htmlQueue: HTMLQueue<T>;
 
-    private queue: Queue<T>;
-
-    constructor() {
+    constructor(parent: HTMLElement, actions?: Action[], id?: string) {
+        super(actions)
         this.queue = new Queue();
+        this.htmlQueue = new HTMLQueue(parent, id)
     }
 
-    offer(item: T): T {
+    offer(item: T): void {
+        this.add(new OfferAction(this.htmlQueue, item));
         this.queue.offer(item);
-        throw new Error("Method not implemented.");
-    }
-    peek(): T | undefined {
-        throw new Error("Method not implemented.");
-    }
-    poll(): T | undefined {
-        throw new Error("Method not implemented.");
-    }
-    size(): number {
-        throw new Error("Method not implemented.");
-    }
-    isEmpty(): boolean {
-        throw new Error("Method not implemented.");
-    }
-    isRunning(): boolean {
-        throw new Error("Method not implemented.");
-    }
-    start(speed: number): void {
-        throw new Error("Method not implemented.");
-    }
-    pause(): void {
-        throw new Error("Method not implemented.");
-    }
-    stop(): void {
-        throw new Error("Method not implemented.");
-    }
-    restart(speed: number): void {
-        throw new Error("Method not implemented.");
     }
 
+    peek(): T {
+        this.add(new PeekAction(this.htmlQueue));
+        return this.queue.peek();
+    }
+
+    poll(): T | undefined {
+        this.add(new PollAction(this.htmlQueue));
+        return this.queue.poll();
+    }
+
+    size(): number {
+        this.add(new SizeAction(this.htmlQueue));
+        return this.queue.size();
+    }
+
+    isEmpty() {
+        this.add(new IsEmptyAction(this.htmlQueue));
+        return this.queue.isEmpty();
+    }
 }

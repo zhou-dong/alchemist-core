@@ -1,6 +1,6 @@
-import { IStack } from "./stack";
+import { IQueue } from "./queue";
 
-export default class <T extends any> implements IStack<T> {
+export default class <T extends any> implements IQueue<T> {
     private readonly table: HTMLTableElement;
 
     constructor(parent: HTMLElement, id?: string) {
@@ -11,15 +11,15 @@ export default class <T extends any> implements IStack<T> {
         parent.appendChild(this.table);
     }
 
-    push(payload: T): void {
-        this.table.insertRow(0).insertCell(0).innerHTML = payload.toString();
+    offer(payload: T): void {
+        this.table.insertRow(this.size()).insertCell(0).innerHTML = payload.toString();
     }
 
     peek(): any {
         return this.table.rows[0].cells[0].innerHTML;
     }
 
-    pop(): any {
+    poll(): any {
         const result = this.peek();
         this.table.deleteRow(0);
         return result;

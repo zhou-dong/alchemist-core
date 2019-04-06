@@ -1,15 +1,15 @@
 import Action from "../commons/action";
 
 export interface IStack<T> {
-    push(payload: T): any;
-    peek(): any;
-    pop(): any;
-    size(): any;
-    isEmpty(): any;
+    push(payload: T): void;
+    peek(): T | undefined;
+    pop(): T | undefined;
+    size(): number;
+    isEmpty(): boolean;
 }
 
 export default class <T> implements IStack<T> {
-    private array: T[];
+    private readonly array: T[];
 
     constructor() {
         this.array = [];
@@ -36,7 +36,7 @@ export default class <T> implements IStack<T> {
     }
 }
 
-export abstract class StackAction<T> implements Action {
+abstract class StackAction<T> implements Action {
     abstract animate(): any
     protected readonly stack: IStack<T>;
 

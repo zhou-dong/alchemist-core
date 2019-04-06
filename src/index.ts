@@ -1,6 +1,5 @@
 import Stack from "./stack";
 import Queue from "./queue";
-import Action from "./commons/action";
 import Actions from "./commons/actions";
 
 class Index extends Actions {
@@ -12,9 +11,15 @@ class Index extends Actions {
     }
 
     createStack<T>(id?: string) {
-        const stackParent = document.createElement("div");
-        this.parent.appendChild(stackParent);
-        return new Stack<T>(stackParent, this.actions, id);
+        const holder = document.createElement("div");
+        this.parent.appendChild(holder);
+        return new Stack<T>(holder, this.actions, id);
+    }
+
+    createQueue<T>(id?: string) {
+        const holder = document.createElement("div");
+        this.parent.appendChild(holder);
+        return new Queue<T>(holder, this.actions, id);
     }
 }
 
