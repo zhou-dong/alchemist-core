@@ -1,14 +1,9 @@
 import { IQueue } from "./queue";
+import SimpleTable from "../commons/simpleTable";
 
-export default class <T extends any> implements IQueue<T> {
-    private readonly table: HTMLTableElement;
-
+export default class <T extends any> extends SimpleTable implements IQueue<T> {
     constructor(parent: HTMLElement, id?: string) {
-        this.table = document.createElement("TABLE") as HTMLTableElement;
-        if (id) {
-            this.table.setAttribute("id", id);
-        }
-        parent.appendChild(this.table);
+        super(parent, id)
     }
 
     offer(payload: T): void {
@@ -23,13 +18,5 @@ export default class <T extends any> implements IQueue<T> {
         const result = this.peek();
         this.table.deleteRow(0);
         return result;
-    }
-
-    size(): number {
-        return this.table.rows.length;
-    }
-
-    isEmpty(): boolean {
-        return this.table.rows.length === 0;
     }
 }
