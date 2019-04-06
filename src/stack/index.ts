@@ -1,48 +1,40 @@
 import Stack, { IStack, PushAction, PeekAction, PopAction, SizeAction, IsEmptyAction } from "./stack";
 import HTMLStack from "./htmlStack";
-import AnimatorActions from "../core/animatorActions";
-import { AnimatorInterval } from "../core/animatorInterval";
+import Action from "../commons/action";
+import Actions from "../commons/actions";
 
-export default class <T> extends AnimatorInterval<T> implements IStack<T> {
+export default class <T> extends Actions implements IStack<T> {
     private stack: Stack<T>;
     private htmlStack: HTMLStack<T>;
-    private actions: AnimatorActions<T>;
 
-    constructor(parent: HTMLElement, actions?: AnimatorActions<T>, id?: string) {
-        if (actions) {
-            super(actions);
-            this.actions = actions;
-        } else {
-            const newActions = new AnimatorActions<T>();
-            super(newActions);
-            this.actions = newActions;
-        }
+    constructor(parent: HTMLElement, actions?: Action[], id?: string) {
+        super(actions);
         this.stack = new Stack();
         this.htmlStack = new HTMLStack(parent, id);
     }
 
     push(payload: T): void {
-        this.actions.add(new PushAction(this.htmlStack, payload));
+        this.add(new PushAction(this.htmlStack, payload));
         this.stack.push(payload);
     }
 
     peek(): T {
-        this.actions.add(new PeekAction(this.htmlStack));
+        this.add(new PeekAction(this.htmlStack));
         return this.stack.peek();
     }
 
     pop(): T | undefined {
-        this.actions.add(new PopAction(this.htmlStack));
+        this.add(new PopAction(this.htmlStack));
         return this.stack.pop();
     }
 
     size() {
-        this.actions.add(new SizeAction(this.htmlStack));
+        this.add(new SizeAction(this.htmlStack));
         return this.stack.size();
     }
 
     isEmpty() {
-        this.actions.add(new IsEmptyAction(this.htmlStack));
+        this.add(new IsEmptyAction(this.htmlStack));
         return this.stack.isEmpty();
     }
 }

@@ -1,16 +1,13 @@
 import Stack from "./stack";
 import Queue from "./queue";
-import AnimatorActions from "./core/animatorActions";
-import { AnimatorInterval } from "./core/animatorInterval";
+import Action from "./commons/action";
+import Actions from "./commons/actions";
 
-class Index extends AnimatorInterval<any> {
-    private actions: AnimatorActions<any>;
-    private parent: HTMLElement;
+class Index extends Actions {
+    private readonly parent: HTMLElement;
 
     constructor(parent: HTMLElement) {
-        const actions = new AnimatorActions<any>();
-        super(actions);
-        this.actions = actions;
+        super([]);
         this.parent = parent;
     }
 

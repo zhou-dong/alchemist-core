@@ -1,97 +1,29 @@
-import AnimatorAction from "../core/animatorAction";
+import Action from "../commons/action";
 
-export interface IStack<P> {
-    push(payload: P): any;
+export interface IStack<T> {
+    push(payload: T): any;
     peek(): any;
     pop(): any;
     size(): any;
     isEmpty(): any;
 }
 
-export interface StackAction<P> extends AnimatorAction<P> {
-    animate(): any
-    readonly payload?: P;
-    readonly stack: IStack<P>;
-}
-
-export class PushAction<P> implements StackAction<P> {
-    payload: P;
-    stack: IStack<P>;
-
-    constructor(stack: IStack<P>, payload: P) {
-        this.stack = stack;
-        this.payload = payload;
-    }
-
-    animate() {
-        this.stack.push(this.payload);
-    }
-}
-
-export class PeekAction<P> implements StackAction<P> {
-    stack: IStack<P>;
-
-    constructor(stack: IStack<P>) {
-        this.stack = stack;
-    }
-
-    animate() {
-        this.stack.peek();
-    }
-}
-
-export class PopAction<P> implements StackAction<P> {
-    stack: IStack<P>;
-
-    constructor(stack: IStack<P>) {
-        this.stack = stack;
-    }
-
-    animate() {
-        this.stack.pop();
-    }
-}
-
-export class SizeAction<P> implements StackAction<P> {
-    stack: IStack<P>;
-
-    constructor(stack: IStack<P>) {
-        this.stack = stack;
-    }
-
-    animate() {
-        this.stack.size();
-    }
-}
-
-export class IsEmptyAction<P> implements StackAction<P> {
-    stack: IStack<P>;
-
-    constructor(stack: IStack<P>) {
-        this.stack = stack;
-    }
-
-    animate() {
-        this.stack.isEmpty();
-    }
-}
-
-export default class <P> implements IStack<P> {
-    private array: P[];
+export default class <T> implements IStack<T> {
+    private array: T[];
 
     constructor() {
         this.array = [];
     }
 
-    push(item: P): void {
+    push(item: T): void {
         this.array.push(item);
     }
 
-    peek(): P {
+    peek(): T {
         return this.array[this.array.length - 1];
     }
 
-    pop(): P | undefined {
+    pop(): T | undefined {
         return this.array.pop();
     }
 
@@ -101,5 +33,67 @@ export default class <P> implements IStack<P> {
 
     isEmpty(): boolean {
         return this.array.length === 0;
+    }
+}
+
+export abstract class StackAction<T> implements Action {
+    abstract animate(): any
+    protected readonly stack: IStack<T>;
+
+    constructor(stack: IStack<T>) {
+        this.stack = stack;
+    }
+}
+
+export class PushAction<T> extends StackAction<T> {
+    private readonly payload: T;
+
+    constructor(stack: IStack<T>, payload: T) {
+        super(stack)
+        this.payload = payload;
+    }
+
+    animate() {
+        this.stack.push(this.payload);
+    }
+}
+
+export class PeekAction<T> extends StackAction<T> {
+    constructor(stack: IStack<T>) {
+        super(stack)
+    }
+
+    animate() {
+        this.stack.peek();
+    }
+}
+
+export class PopAction<T> extends StackAction<T> {
+    constructor(stack: IStack<T>) {
+        super(stack)
+    }
+
+    animate() {
+        this.stack.pop();
+    }
+}
+
+export class SizeAction<T> extends StackAction<T> {
+    constructor(stack: IStack<T>) {
+        super(stack)
+    }
+
+    animate() {
+        this.stack.size();
+    }
+}
+
+export class IsEmptyAction<T> extends StackAction<T> {
+    constructor(stack: IStack<T>) {
+        super(stack)
+    }
+
+    animate() {
+        this.stack.isEmpty();
     }
 }

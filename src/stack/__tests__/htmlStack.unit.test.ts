@@ -10,7 +10,7 @@ test("push", () => {
     for (let i = 0; i < 10; i++) {
         stack.push(i);
         expect(stack.size()).toBe(i + 1);
-        expect(stack.peek()).toBe(i);
+        expect(stack.peek()).toBe(i.toString());
     }
 });
 
@@ -18,7 +18,7 @@ test("peek", () => {
     for (let i = 0; i < 10; i++) {
         stack.push(i);
         expect(stack.size()).toBe(i + 1);
-        expect(stack.peek()).toBe(i);
+        expect(stack.peek()).toBe(i.toString());
     }
 });
 
@@ -31,7 +31,7 @@ test("pop", () => {
     }
 
     for (let i = size - 1; i >= 0; i--) {
-        expect(stack.pop()).toBe(i);
+        expect(stack.pop()).toBe(i.toString());
         expect(stack.size()).toBe(i);
     }
 });
