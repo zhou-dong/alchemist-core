@@ -11,15 +11,11 @@ class Index extends Actions {
     }
 
     createStack<T>(id?: string) {
-        const holder = document.createElement("div");
-        this.parent.appendChild(holder);
-        return new Stack<T>(holder, this.actions, id);
+        return new Stack<T>(this.parent, this.actions, id);
     }
 
     createQueue<T>(id?: string) {
-        const holder = document.createElement("div");
-        this.parent.appendChild(holder);
-        return new Queue<T>(holder, this.actions, id);
+        return new Queue<T>(this.parent, this.actions, id);
     }
 }
 
