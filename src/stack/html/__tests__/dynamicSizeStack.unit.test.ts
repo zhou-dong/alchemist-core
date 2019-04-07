@@ -1,27 +1,25 @@
-import Stack from "../stack";
+import Stack from "../dynamicSizeStack";
 
 let stack: Stack<number>;
 
 beforeEach(() => {
-    stack = new Stack();
+    stack = new Stack(document.createElement("div"), "test-stack");
 });
 
 test("push", () => {
     for (let i = 0; i < 10; i++) {
-        expect(stack.size()).toBe(i);
         stack.push(i);
         expect(stack.size()).toBe(i + 1);
-        expect(stack.peek()).toBe(i);
+        expect(stack.peek()).toBe(i.toString());
     }
 });
 
 test("peek", () => {
     expect(() => stack.peek()).toThrowError();
     for (let i = 0; i < 10; i++) {
-        expect(stack.size()).toBe(i);
         stack.push(i);
         expect(stack.size()).toBe(i + 1);
-        expect(stack.peek()).toBe(i);
+        expect(stack.peek()).toBe(i.toString());
     }
 });
 
@@ -35,14 +33,13 @@ test("pop", () => {
     }
 
     for (let i = size - 1; i >= 0; i--) {
-        expect(stack.pop()).toBe(i);
+        expect(stack.pop()).toBe(i.toString());
         expect(stack.size()).toBe(i);
     }
 });
 
 test("size", () => {
     for (let i = 0; i < 10; i++) {
-        expect(stack.size()).toBe(i);
         stack.push(i);
         expect(stack.size()).toBe(i + 1);
     }

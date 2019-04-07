@@ -1,9 +1,9 @@
-import Queue from "../queue";
+import Queue from "../dynamicSizeQueue";
 
 let queue: Queue<number>;
 
 beforeEach(() => {
-    queue = new Queue();
+    queue = new Queue(document.createElement("div"));
 });
 
 test("offer", () => {
@@ -11,7 +11,7 @@ test("offer", () => {
         expect(queue.size()).toBe(i);
         queue.offer(i);
         expect(queue.size()).toBe(i + 1);
-        expect(queue.peek()).toBe(0);
+        expect(queue.peek()).toBe("0");
     }
 });
 
@@ -21,7 +21,7 @@ test("peek", () => {
         expect(queue.size()).toBe(i);
         queue.offer(i);
         expect(queue.size()).toBe(i + 1);
-        expect(queue.peek()).toBe(0);
+        expect(queue.peek()).toBe("0");
     }
 });
 
@@ -36,7 +36,7 @@ test("poll", () => {
 
     for (let i = 0; i < size; i++) {
         expect(queue.size()).toBe(size - i);
-        expect(queue.poll()).toBe(i);
+        expect(queue.poll()).toBe(i.toString());
     }
 });
 

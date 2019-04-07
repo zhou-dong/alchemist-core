@@ -10,12 +10,12 @@ class Index extends Actions {
         this.parent = parent;
     }
 
-    createStack<T>(id?: string) {
-        return new Stack<T>(this.parent, this.actions, id);
+    createStack<T>(size?: number, id?: string) {
+        return new Stack<T>(this.parent, size, id, this.actions);
     }
 
-    createQueue<T>(id?: string) {
-        return new Queue<T>(this.parent, this.actions, id);
+    createQueue<T>(size?: number, id?: string) {
+        return new Queue<T>(this.parent, size, id, this.actions);
     }
 }
 

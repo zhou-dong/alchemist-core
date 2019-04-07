@@ -20,7 +20,7 @@ export default class implements Iterable<Action>, Animatable {
         this.iterators = this.iterator();
     }
 
-    add(action: Action): void {
+    addAction(action: Action): void {
         this.actions.push(action);
     }
 

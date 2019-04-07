@@ -2,8 +2,8 @@ import Action from "../commons/action";
 
 export interface IStack<T> {
     push(payload: T): void;
-    peek(): T | undefined;
-    pop(): T | undefined;
+    peek(): T;
+    pop(): T;
     size(): number;
     isEmpty(): boolean;
 }
@@ -20,11 +20,19 @@ export default class <T> implements IStack<T> {
     }
 
     peek(): T {
-        return this.array[this.array.length - 1];
+        if (this.isEmpty()) {
+            throw new Error("stack is empty");
+        } else {
+            return this.array[this.array.length - 1];
+        }
     }
 
-    pop(): T | undefined {
-        return this.array.pop();
+    pop(): T {
+        if (this.isEmpty()) {
+            throw new Error("stack is empty");
+        } else {
+            return this.array.pop() as T;
+        }
     }
 
     size(): number {

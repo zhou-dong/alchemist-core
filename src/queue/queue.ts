@@ -2,8 +2,8 @@ import Action from "../commons/action";
 
 export interface IQueue<T> {
     offer(item: T): void;
-    peek(): T | undefined;
-    poll(): T | undefined;
+    peek(): T;
+    poll(): T;
     size(): number;
     isEmpty(): boolean;
 }
@@ -20,11 +20,19 @@ export default class Queue<T> implements IQueue<T> {
     }
 
     peek(): T {
-        return this.array[0];
+        if (this.isEmpty()) {
+            throw new Error("queue is empty");
+        } else {
+            return this.array[0];
+        }
     }
 
-    poll(): T | undefined {
-        return this.array.shift();
+    poll(): T {
+        if (this.isEmpty()) {
+            throw new Error("queue is empty");
+        } else {
+            return this.array.shift() as T;
+        }
     }
 
     size(): number {

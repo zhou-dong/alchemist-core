@@ -1,9 +1,11 @@
-import Stack from "../stack";
+import Stack from "..";
+import { PushAction, PeekAction, IsEmptyAction, SizeAction, PopAction } from "../stack";
+import ArrayIterator from "../../commons/arrayIterator";
 
 let stack: Stack<number>;
 
 beforeEach(() => {
-    stack = new Stack();
+    stack = new Stack(document.createElement("div"), 100);
 });
 
 test("push", () => {
@@ -54,4 +56,44 @@ test("isEmpty", () => {
     expect(stack.isEmpty()).toBeFalsy();
     stack.pop();
     expect(stack.isEmpty()).toBeTruthy();
+});
+
+test("actions", () => {
+    stack.push(1);
+    stack.peek();
+    stack.isEmpty();
+    stack.size();
+    stack.pop();
+
+    const actions = Array();
+    actions.push(PushAction)
+    actions.push(PeekAction);
+    actions.push(IsEmptyAction);
+    actions.push(SizeAction);
+    actions.push(PopAction);
+
+    const actual = new ArrayIterator(actions)
+    const expected = stack.iterator()
+
+    while (expected.hasNext()) {
+        typeof expected.next() === actual.next()
+    }
+});
+
+test("interval", () => {
+    stack.push(1);
+    stack.peek();
+    stack.isEmpty();
+    stack.size();
+    stack.pop();
+
+    expect(stack.isRunning()).toBeFalsy();
+    stack.start(10000);
+    expect(stack.isRunning()).toBeTruthy();
+    stack.pause();
+    expect(stack.isRunning()).toBeFalsy();
+    stack.restart(10000);
+    expect(stack.isRunning()).toBeTruthy();
+    stack.pause();
+    expect(stack.isRunning()).toBeFalsy();
 });

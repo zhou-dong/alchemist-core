@@ -1,13 +1,14 @@
-import Queue from "../htmlQueue";
+import Queue from "../fixedSizeQueue";
 
 let queue: Queue<number>;
+const capacity = 10;
 
 beforeEach(() => {
-    queue = new Queue(document.createElement("div"));
+    queue = new Queue(document.createElement("div"), capacity);
 });
 
 test("offer", () => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < capacity; i++) {
         expect(queue.size()).toBe(i);
         queue.offer(i);
         expect(queue.size()).toBe(i + 1);
@@ -16,7 +17,8 @@ test("offer", () => {
 });
 
 test("peek", () => {
-    for (let i = 0; i < 10; i++) {
+    expect(() => queue.peek()).toThrowError();
+    for (let i = 0; i < capacity; i++) {
         expect(queue.size()).toBe(i);
         queue.offer(i);
         expect(queue.size()).toBe(i + 1);
@@ -25,21 +27,21 @@ test("peek", () => {
 });
 
 test("poll", () => {
-    const size = 10;
-    for (let i = 0; i < size; i++) {
+    expect(() => queue.poll()).toThrowError();
+    for (let i = 0; i < capacity; i++) {
         expect(queue.size()).toBe(i);
         queue.offer(i);
         expect(queue.size()).toBe(i + 1);
     }
 
-    for (let i = 0; i < size; i++) {
-        expect(queue.size()).toBe(size - i);
+    for (let i = 0; i < capacity; i++) {
+        expect(queue.size()).toBe(capacity - i);
         expect(queue.poll()).toBe(i.toString());
     }
 });
 
 test("size", () => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < capacity; i++) {
         expect(queue.size()).toBe(i);
         queue.offer(i);
         expect(queue.size()).toBe(i + 1);
@@ -52,4 +54,16 @@ test("isEmpty", () => {
     expect(queue.isEmpty()).toBeFalsy();
     queue.poll();
     expect(queue.isEmpty()).toBeTruthy();
+});
+
+test("stack full exception", () => {
+    for (let i = 0; i < capacity; i++) {
+        queue.offer(i);
+    }
+
+    expect(() => queue.offer(10)).toThrowError();
+});
+
+test("negative capacity", () => {
+    expect(() => new Queue(document.createElement("div"), -1)).toThrowError();
 });
