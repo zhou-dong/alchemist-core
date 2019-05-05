@@ -1,31 +1,83 @@
-import Iterable from "./iterable";
-import Iterator from "./iterator";
 import Action from "./action";
 import Animatable from "./animatable";
-import ArrayIterator from "./arrayIterator";
+import ListIterator from "./listIterator"
+import ListIterable from "./listIterable";
 
-export default class implements Iterable<Action>, Animatable {
+class ActionsListIterator implements ListIterator<Action> {
+    private cursor: number;
+    private readonly forwardActions: Action[];
+    private readonly backwardActions: Action[];
+
+    constructor(forwardActions: Action[], backwardActions: Action[]) {
+        if (forwardActions.length !== backwardActions.length) {
+            throw new Error("forwardActions.length !== backwardActions.length")
+        }
+        this.forwardActions = forwardActions;
+        this.backwardActions = backwardActions;
+        this.cursor = 0;
+    }
+
+    previous(): Action {
+        return this.backwardActions[--this.cursor];
+    }
+
+    previousIndex(): number {
+        return this.cursor - 1;
+    }
+
+    hasPrevious(): boolean {
+        return this.cursor > 0;
+    }
+
+    next(): Action {
+        return this.forwardActions[this.cursor++];
+    }
+
+    nextIndex(): number {
+        return this.cursor;
+    }
+
+    hasNext(): boolean {
+        return this.cursor < this.size();
+    }
+
+    size(): number {
+        return this.forwardActions.length;
+    }
+
+    rewind(): void {
+        this.cursor = 0;
+    }
+}
+
+export default class implements ListIterable<Action>, Animatable {
+    protected readonly forwardActions: Action[];
+    protected readonly backwardActions: Action[];
     private readonly invalid: number = -1;
-    protected readonly actions: Action[];
-    private iterators: Iterator<Action>;
+    private iterator: ListIterator<Action>;
     private timer: number;
 
-    constructor(actions?: Action[]) {
-        if (actions) {
-            this.actions = actions;
+    constructor(forwardActions?: Action[], backwardActions?: Action[]) {
+        if (forwardActions && backwardActions) {
+            this.forwardActions = forwardActions;
+            this.backwardActions = backwardActions;
+        } else if (!forwardActions && !backwardActions) {
+            this.forwardActions = [];
+            this.backwardActions = [];
         } else {
-            this.actions = [];
+            throw new Error("forwardActions and backwardActions must both null or both not null");
         }
         this.timer = this.invalid;
-        this.iterators = this.iterator();
+        this.iterator = this.listIterator();
     }
 
-    addAction(action: Action): void {
-        this.actions.push(action);
+    addAction(forwardAction: Action, backwardAction: Action): void {
+        this.forwardActions.push(forwardAction);
+        this.backwardActions.push(backwardAction);
     }
 
-    iterator(): Iterator<Action> {
-        return new ArrayIterator(this.actions);
+    listIterator(): ListIterator<Action> {
+        return new ActionsListIterator(this.forwardActions, this.backwardActions);
     }
 
     isRunning(): boolean {
@@ -37,8 +89,8 @@ export default class implements Iterable<Action>, Animatable {
             this.pause();
         }
         this.timer = setInterval(() => {
-            if (this.iterators.hasNext()) {
-                this.iterators.next().animate();
+            if (this.iterator.hasNext()) {
+                this.iterator.next().animate();
             } else {
                 this.pause();
             }
@@ -52,7 +104,7 @@ export default class implements Iterable<Action>, Animatable {
 
     restart(speed: number): void {
         this.pause();
-        this.iterators = this.iterator();
+        this.iterator = this.listIterator();
         this.start(speed);
     }
 }

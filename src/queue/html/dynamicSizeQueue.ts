@@ -1,7 +1,7 @@
-import { IQueue } from "../queue";
+import { IQueueWithDeleteLast } from "../queue";
 import { createHTMLTable } from "../../commons/helpers/htmlHelper"
 
-export default class <T extends any> implements IQueue<T> {
+export default class <T extends any> implements IQueueWithDeleteLast<T> {
     private readonly table: HTMLTableElement;
 
     constructor(parent: HTMLElement, id?: string) {
@@ -36,5 +36,16 @@ export default class <T extends any> implements IQueue<T> {
 
     isEmpty(): boolean {
         return this.table.rows.length === 0;
+    }
+
+    deleteLast(): any {
+        if (this.isEmpty()) {
+            throw new Error("queue is empty");
+        } else {
+            const lastRowIndex = this.size() - 1;
+            const result = this.table.rows[lastRowIndex].cells[0].innerHTML;
+            this.table.deleteRow(lastRowIndex);
+            return result;
+        }
     }
 }

@@ -25,6 +25,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^23.3.10",
+    "@types/webpack-env": "^1.13.9",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "ts-jest": "^23.10.5",

@@ -1,6 +1,5 @@
 import Stack from "..";
 import { PushAction, PeekAction, IsEmptyAction, SizeAction, PopAction } from "../stack";
-import ArrayIterator from "../../commons/arrayIterator";
 
 let stack: Stack<number>;
 
@@ -58,27 +57,27 @@ test("isEmpty", () => {
     expect(stack.isEmpty()).toBeTruthy();
 });
 
-test("actions", () => {
-    stack.push(1);
-    stack.peek();
-    stack.isEmpty();
-    stack.size();
-    stack.pop();
+// test("actions", () => {
+//     stack.push(1);
+//     stack.peek();
+//     stack.isEmpty();
+//     stack.size();
+//     stack.pop();
 
-    const actions = Array();
-    actions.push(PushAction)
-    actions.push(PeekAction);
-    actions.push(IsEmptyAction);
-    actions.push(SizeAction);
-    actions.push(PopAction);
+//     const actions = Array();
+//     actions.push(PushAction)
+//     actions.push(PeekAction);
+//     actions.push(IsEmptyAction);
+//     actions.push(SizeAction);
+//     actions.push(PopAction);
 
-    const actual = new ArrayIterator(actions)
-    const expected = stack.iterator()
+//     const actual = new ArrayIterator(actions)
+//     const expected = stack.listIterator()
 
-    while (expected.hasNext()) {
-        typeof expected.next() === actual.next()
-    }
-});
+//     while (expected.hasNext()) {
+//         typeof expected.next() === actual.next()
+//     }
+// });
 
 test("interval", () => {
     stack.push(1);

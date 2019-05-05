@@ -8,6 +8,10 @@ export interface IQueue<T> {
     isEmpty(): boolean;
 }
 
+export interface IQueueWithDeleteLast<T> extends IQueue<T> {
+    deleteLast(): T
+}
+
 export default class Queue<T> implements IQueue<T> {
     private readonly array: T[];
 

@@ -1,4 +1,4 @@
-import { IQueue } from "../queue";
+import { IQueueWithDeleteLast } from "../queue";
 import { createHTMLTable } from "../../commons/helpers/htmlHelper"
 
 export default class <T extends any> implements IQueue<T> {
@@ -52,5 +52,16 @@ export default class <T extends any> implements IQueue<T> {
 
     isEmpty(): boolean {
         return this._size === 0;
+    }
+
+    deleteLast(): any {
+        if (this.isEmpty()) {
+            throw new Error("queue is empty");
+        } else {
+            const lastRowIndex = this.size() - 1;
+            const result = this.table.rows[lastRowIndex].cells[0].innerHTML;
+            this.table.rows[lastRowIndex].cells[0].innerHTML = "";
+            return result;
+        }
     }
 }
