@@ -24,11 +24,15 @@
   "author": "Dong Zhou",
   "license": "ISC",
   "devDependencies": {
+    "@types/d3": "^5.7.2",
     "@types/jest": "^23.3.10",
     "@types/webpack-env": "^1.13.9",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "ts-jest": "^23.10.5",
     "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "d3": "^5.9.2"
   }
 }

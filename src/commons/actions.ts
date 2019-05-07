@@ -3,7 +3,7 @@ import Animatable from "./animatable";
 import ListIterator from "./listIterator"
 import ListIterable from "./listIterable";
 
-class ActionsListIterator implements ListIterator<Action> {
+export class Actions implements ListIterator<Action> {
     private cursor: number;
     private readonly forwardActions: Action[];
     private readonly backwardActions: Action[];
@@ -15,6 +15,11 @@ class ActionsListIterator implements ListIterator<Action> {
         this.forwardActions = forwardActions;
         this.backwardActions = backwardActions;
         this.cursor = 0;
+    }
+
+    addAction(action: Action, backwardAction: Action): void {
+        this.forwardActions.push(action);
+        this.backwardActions.push(backwardAction);
     }
 
     previous(): Action {
@@ -77,7 +82,7 @@ export default class implements ListIterable<Action>, Animatable {
     }
 
     listIterator(): ListIterator<Action> {
-        return new ActionsListIterator(this.forwardActions, this.backwardActions);
+        return new Actions(this.forwardActions, this.backwardActions);
     }
 
     isRunning(): boolean {
