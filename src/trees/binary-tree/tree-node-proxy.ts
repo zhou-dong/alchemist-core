@@ -1,47 +1,71 @@
-import TreeNode from "./tree-node";
 import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
+import TreeNode from "./tree-node";
 
-const val = "val";
-const left = "left";
-const right = "right";
+const [val, left, right] = ["val", "left", "right"];
 
-export const createHandler = <T>(hierarchyNodeDatum: HierarchyNodeDatum<T>): ProxyHandler<TreeNode<T>> => ({
+const cloneNodeDatum = <T>(hierarchyNodeDatum: HierarchyNodeDatum<T>): HierarchyNodeDatum<T> => {
+    const { name, children } = hierarchyNodeDatum;
+    if (children) {
+        return { name, children: children.slice(0) };
+    } else {
+        return { name };
+    }
+};
+
+const addSnapshot = <T>(
+    treeNode: TreeNode<T>,
+    snapshots: HierarchyNodeDatum<T>[],
+    callback: (clonedHierarchyNodeDatum: HierarchyNodeDatum<T>) => any
+) => {
+    const cloned = cloneNodeDatum(treeNode.hierarchyNodeDatum);
+    callback(cloned);
+    snapshots.push(cloned);
+};
+
+const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeNode<T>> => ({
     get: function (target, propertyKey, receiver) {
         switch (propertyKey) {
             case val: {
-                // TODO
+                addSnapshot(target, snapshots, cloned => {
+                    // TODO
+                });
                 break;
             }
             case left: {
-                // TODO
+                addSnapshot(target, snapshots, cloned => {
+                    // TODO
+                });
                 break;
             }
             case right: {
-                // TODO
+                addSnapshot(target, snapshots, cloned => {
+                    // TODO
+                });
                 break;
             }
         }
-
         return Reflect.get(target, propertyKey, receiver);
     },
     set: function (target, propertyKey, value, receiver) {
         switch (propertyKey) {
             case val: {
-                hierarchyNodeDatum.name = value;
+                addSnapshot(target, snapshots, cloned => cloned.name = value);
                 break;
             }
             case left: {
-                if (!hierarchyNodeDatum.children) {
-                    hierarchyNodeDatum.children = [];
-                }
-                hierarchyNodeDatum.children[0] = value;
+                addSnapshot(target, snapshots, cloned => {
+                    if (!cloned.children)
+                        cloned.children = [];
+                    cloned.children[0] = value;
+                });
                 break;
             }
             case right: {
-                if (!hierarchyNodeDatum.children) {
-                    hierarchyNodeDatum.children = [];
-                }
-                hierarchyNodeDatum.children[1] = value;
+                addSnapshot(target, snapshots, cloned => {
+                    if (!cloned.children)
+                        cloned.children = [];
+                    cloned.children[1] = value;
+                });
                 break;
             }
         }
@@ -49,20 +73,20 @@ export const createHandler = <T>(hierarchyNodeDatum: HierarchyNodeDatum<T>): Pro
     },
     deleteProperty: function (target, propertyKey) {
         switch (propertyKey) {
-            case val: {
-                delete hierarchyNodeDatum["name"]
-                break;
-            }
             case left: {
-                if (hierarchyNodeDatum.children) {
-                    delete hierarchyNodeDatum.children[0];
-                }
+                addSnapshot(target, snapshots, cloned => {
+                    if (cloned.children) {
+                        delete cloned.children[0];
+                    }
+                });
                 break;
             }
             case right: {
-                if (hierarchyNodeDatum.children) {
-                    delete hierarchyNodeDatum.children[1];
-                }
+                addSnapshot(target, snapshots, cloned => {
+                    if (cloned.children) {
+                        delete cloned.children[1];
+                    }
+                });
                 break;
             }
         }
@@ -70,6 +94,6 @@ export const createHandler = <T>(hierarchyNodeDatum: HierarchyNodeDatum<T>): Pro
     }
 });
 
-export default <T>(treeNode: TreeNode<T>, hierarchyNodeDatum: HierarchyNodeDatum<T>) => {
-    return new Proxy(treeNode, createHandler<T>(hierarchyNodeDatum));
+export default <T>(val: T, snapshots: HierarchyNodeDatum<T>[]) => {
+    return new Proxy(new TreeNode(val), proxyHandler(snapshots));
 }

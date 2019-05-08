@@ -1,4 +1,4 @@
-export default interface HierarchyDatum<T> {
-    name?: T;
+export default interface HierarchyNodeDatum<T> {
+    name: T;
     children?: Array<this>;
 }
