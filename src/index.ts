@@ -2,8 +2,7 @@ import Stack from "./stack";
 import Queue from "./queue";
 import Actions from "./commons/actions";
 import Action from "./commons/action";
-import ListIterable from "./commons/listIterable";
-import ListIterator from "./commons/listIterator";
+import { ListIterator, ListIterable } from "./commons/iterators";
 
 class Index extends Actions {
     private readonly parent: HTMLElement;

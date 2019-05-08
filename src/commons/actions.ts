@@ -1,7 +1,6 @@
 import Action from "./action";
 import Animatable from "./animatable";
-import ListIterator from "./listIterator"
-import ListIterable from "./listIterable";
+import { ListIterator, ListIterable } from "./iterators";
 
 export class Actions implements ListIterator<Action> {
     private cursor: number;

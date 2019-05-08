@@ -1,7 +1,7 @@
 import { IQueueWithDeleteLast } from "../queue";
 import { createHTMLTable } from "../../commons/helpers/htmlHelper"
 
-export default class <T extends any> implements IQueue<T> {
+export default class <T extends any> implements IQueueWithDeleteLast<T> {
     private readonly table: HTMLTableElement;
     private readonly capacity: number;
     private _size: number;
