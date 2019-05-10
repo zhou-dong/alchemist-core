@@ -22,7 +22,7 @@ class Index extends Actions {
     }
 }
 
-export { ListIterator, ListIterable, Action };
+export { ListIterator, ListIterable, Action, Actions };
 export { Stack };
 export { Queue };
 export { Index };

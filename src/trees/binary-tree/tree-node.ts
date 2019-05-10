@@ -1,6 +1,6 @@
 import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
 
-interface ITreeNode<T> {
+export interface ITreeNode<T> {
     val: T;
     left?: this;
     right?: this;

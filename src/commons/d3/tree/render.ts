@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import HierarchyNodeDatum from "../hierarchy-node-datum";
-import "./tree.css";
+// import "./tree.css";
 
 // set the dimensions and margins of the diagram
 const margin = { top: 40, right: 90, bottom: 50, left: 90 };
@@ -13,6 +13,8 @@ const getClientSize = (id: string) => {
 }
 
 export default <T>(data: HierarchyNodeDatum<T>, parentId: string) => {
+
+    const parent = document.getElementById(parentId);
 
     // Constructs a root node from the specified hierarchical data.
     const root: d3.HierarchyNode<HierarchyNodeDatum<T>> = d3.hierarchy(data)
@@ -27,7 +29,8 @@ export default <T>(data: HierarchyNodeDatum<T>, parentId: string) => {
     // append the svg obgect to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
-    const g = d3.select(`#${parentId}`).append("svg")
+    // const g = d3.select(`#${parentId}`).append("svg")
+    const g = d3.select(parent).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")

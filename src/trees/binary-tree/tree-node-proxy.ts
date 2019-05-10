@@ -1,5 +1,5 @@
 import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
-import TreeNode from "./tree-node";
+import TreeNode, { ITreeNode } from "./tree-node";
 import Action from "../../commons/d3/tree/action";
 import Actions from "../../commons/actions";
 
@@ -97,6 +97,6 @@ const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<Tre
     }
 });
 
-export default <T>(val: T, actions: Actions, parentId: string, ) => {
+export default <T>(val: T, actions: Actions, parentId: string): ITreeNode<T> => {
     return new Proxy(new TreeNode(val), proxyHandler(actions, parentId));
 }
