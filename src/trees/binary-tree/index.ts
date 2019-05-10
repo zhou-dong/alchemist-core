@@ -1,6 +1,6 @@
-import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
 import treeNodeProxy from "./tree-node-proxy";
+import Actions from "../../commons/actions";
 
-export default <T>(t: T, snapshots: HierarchyNodeDatum<T>[]) => {
-    return treeNodeProxy(t, snapshots);
+export default <T>(t: T, parentId: string, actions: Actions) => {
+    return treeNodeProxy(t, actions, parentId);
 }

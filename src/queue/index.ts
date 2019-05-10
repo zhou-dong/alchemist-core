@@ -15,33 +15,33 @@ export default class <T> extends Actions implements IQueue<T> {
         forwardActions?: Action[],
         backwardActions?: Action[]
     ) {
-        super(forwardActions, backwardActions)
+        super([])
         this.queue = new Queue();
         this.htmlQueue = size ? new FixedSizeQueue(parent, size, id) : new DynamicSizeQueue(parent, id)
     }
 
     offer(item: T): void {
-        this.addAction(new OfferAction(this.htmlQueue, item), new PollAction(this.htmlQueue));
+        // this.addAction(new OfferAction(this.htmlQueue, item), new PollAction(this.htmlQueue));
         this.queue.offer(item);
     }
 
     peek(): T {
-        this.addAction(new PeekAction(this.htmlQueue), new PeekAction(this.htmlQueue));
+        // this.addAction(new PeekAction(this.htmlQueue), new PeekAction(this.htmlQueue));
         return this.queue.peek();
     }
 
     poll(): T {
-        this.addAction(new PollAction(this.htmlQueue), new OfferAction(this.htmlQueue, this.queue.peek()));
+        // this.addAction(new PollAction(this.htmlQueue), new OfferAction(this.htmlQueue, this.queue.peek()));
         return this.queue.poll();
     }
 
     size(): number {
-        this.addAction(new SizeAction(this.htmlQueue), new SizeAction(this.htmlQueue));
+        // this.addAction(new SizeAction(this.htmlQueue), new SizeAction(this.htmlQueue));
         return this.queue.size();
     }
 
     isEmpty() {
-        this.addAction(new IsEmptyAction(this.htmlQueue), new IsEmptyAction(this.htmlQueue));
+        // this.addAction(new IsEmptyAction(this.htmlQueue), new IsEmptyAction(this.htmlQueue));
         return this.queue.isEmpty();
     }
 }

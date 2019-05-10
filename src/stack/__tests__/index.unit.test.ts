@@ -78,21 +78,3 @@ test("isEmpty", () => {
 //         typeof expected.next() === actual.next()
 //     }
 // });
-
-test("interval", () => {
-    stack.push(1);
-    stack.peek();
-    stack.isEmpty();
-    stack.size();
-    stack.pop();
-
-    expect(stack.isRunning()).toBeFalsy();
-    stack.start(10000);
-    expect(stack.isRunning()).toBeTruthy();
-    stack.pause();
-    expect(stack.isRunning()).toBeFalsy();
-    stack.restart(10000);
-    expect(stack.isRunning()).toBeTruthy();
-    stack.pause();
-    expect(stack.isRunning()).toBeFalsy();
-});

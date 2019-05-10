@@ -1,5 +1,7 @@
 import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
 import TreeNode from "./tree-node";
+import Action from "../../commons/d3/tree/action";
+import Actions from "../../commons/actions";
 
 const [val, left, right] = ["val", "left", "right"];
 
@@ -14,31 +16,32 @@ const cloneNodeDatum = <T>(hierarchyNodeDatum: HierarchyNodeDatum<T>): Hierarchy
 
 const addSnapshot = <T>(
     treeNode: TreeNode<T>,
-    snapshots: HierarchyNodeDatum<T>[],
+    actions: Actions,
+    parentId: string,
     callback: (clonedHierarchyNodeDatum: HierarchyNodeDatum<T>) => any
 ) => {
     const cloned = cloneNodeDatum(treeNode.hierarchyNodeDatum);
     callback(cloned);
-    snapshots.push(cloned);
+    actions.add(new Action(cloned, parentId));
 };
 
-const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeNode<T>> => ({
+const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<TreeNode<T>> => ({
     get: function (target, propertyKey, receiver) {
         switch (propertyKey) {
             case val: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     // TODO
                 });
                 break;
             }
             case left: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     // TODO
                 });
                 break;
             }
             case right: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     // TODO
                 });
                 break;
@@ -49,11 +52,11 @@ const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeN
     set: function (target, propertyKey, value, receiver) {
         switch (propertyKey) {
             case val: {
-                addSnapshot(target, snapshots, cloned => cloned.name = value);
+                addSnapshot(target, actions, parentId, cloned => cloned.name = value);
                 break;
             }
             case left: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     if (!cloned.children)
                         cloned.children = [];
                     cloned.children[0] = value;
@@ -61,7 +64,7 @@ const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeN
                 break;
             }
             case right: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     if (!cloned.children)
                         cloned.children = [];
                     cloned.children[1] = value;
@@ -74,7 +77,7 @@ const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeN
     deleteProperty: function (target, propertyKey) {
         switch (propertyKey) {
             case left: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     if (cloned.children) {
                         delete cloned.children[0];
                     }
@@ -82,7 +85,7 @@ const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeN
                 break;
             }
             case right: {
-                addSnapshot(target, snapshots, cloned => {
+                addSnapshot(target, actions, parentId, cloned => {
                     if (cloned.children) {
                         delete cloned.children[1];
                     }
@@ -94,6 +97,6 @@ const proxyHandler = <T>(snapshots: HierarchyNodeDatum<T>[]): ProxyHandler<TreeN
     }
 });
 
-export default <T>(val: T, snapshots: HierarchyNodeDatum<T>[]) => {
-    return new Proxy(new TreeNode(val), proxyHandler(snapshots));
+export default <T>(val: T, actions: Actions, parentId: string, ) => {
+    return new Proxy(new TreeNode(val), proxyHandler(actions, parentId));
 }
