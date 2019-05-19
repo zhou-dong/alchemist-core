@@ -3,28 +3,33 @@ import HierarchyNodeDatum from "../hierarchy-node-datum";
 // import "./tree.css";
 
 // set the dimensions and margins of the diagram
-const margin = { top: 40, right: 90, bottom: 50, left: 90 };
+// const margin = { top: 40, right: 90, bottom: 50, left: 90 };
+const margin = { top: 30, right: 20, bottom: 30, left: 20 };
 
-const getClientSize = (id: string) => {
-    const parent: HTMLElement = (document.getElementById(id) as any);
+const getClientSize = (parent: HTMLElement) => {
     const width = parent.clientWidth - margin.left - margin.right;
     const height = parent.clientHeight - margin.top - margin.bottom;
     return [width, height];
 }
 
-export default <T>(data: HierarchyNodeDatum<T>, parentId: string) => {
+const clearBoard = (parent: HTMLElement) => {
+    const children = parent.children;
+    for (let i = 0; i < children.length; i++) {
+        parent.removeChild(children[i]);
+    }
+}
 
-    const parent = document.getElementById(parentId);
+export default <T>(data: HierarchyNodeDatum<T>, parent: HTMLElement) => {
+    const [width, height] = getClientSize(parent);
+    clearBoard(parent);
 
     // Constructs a root node from the specified hierarchical data.
     const root: d3.HierarchyNode<HierarchyNodeDatum<T>> = d3.hierarchy(data)
 
-    const [width, height] = getClientSize(parentId);
-
     // declares a tree layout and assigns the size
     const tree = d3.tree().size([width, height]);
 
-    const nodes = tree(root)
+    const nodes = tree(root);
 
     // append the svg obgect to the body of the page
     // appends a 'group' element to 'svg'
@@ -40,7 +45,8 @@ export default <T>(data: HierarchyNodeDatum<T>, parentId: string) => {
     const link = g.selectAll(".link")
         .data(nodes.descendants().slice(1))
         .enter().append("path")
-        .attr("class", "link")
+        // .attr("class", "link")
+        .attr("class", d => (d.data as any).classes.join(" ") + " link")
         .attr("d", d => {
             if (d.parent) {
                 return "M" + d.x + "," + d.y
@@ -56,7 +62,10 @@ export default <T>(data: HierarchyNodeDatum<T>, parentId: string) => {
     const node = g.selectAll(".node")
         .data(nodes.descendants())
         .enter().append("g")
-        .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
+        .attr("class", d => {
+            const basic = "node" + (d.children ? " node--internal" : " node--leaf");
+            return basic + " " + (d.data as any).classes.join(" ");
+        })
         .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
 
     // adds the circle to the node
@@ -68,4 +77,15 @@ export default <T>(data: HierarchyNodeDatum<T>, parentId: string) => {
         .attr("y", function (d) { return d.children ? -20 : 20; })
         .style("text-anchor", "middle")
         .text(d => (d.data as any).name)
+
+    node.selectAll(".target circle")
+        .attr("r", 15)
+        .style("stroke", "green")
+
+    node.selectAll(".new-added circle")
+        .transition()
+        .attr("r", 15)
+        .style("stroke", "green")
+        .ease(d3.easeBounce)
+        .duration(400);
 };

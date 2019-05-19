@@ -1,19 +1,21 @@
-import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
+import HierarchyNodeDatum from "../../commons/d3/tree/binary-tree-node-datum";
 
-export interface ITreeNode<T> {
+interface ITreeNode<T> {
     val: T;
     left?: this;
     right?: this;
 }
 
-export default class <T> implements ITreeNode<T> {
+class TreeNode<T extends any> implements ITreeNode<T> {
     val: T;
     left?: this;
     right?: this;
-    hierarchyNodeDatum: HierarchyNodeDatum<T>;
+    hierarchyNodeDatum: HierarchyNodeDatum;
 
     constructor(val: T) {
         this.val = val;
-        this.hierarchyNodeDatum = { name: val }
+        this.hierarchyNodeDatum = new HierarchyNodeDatum(val.toString());
     }
 }
+
+export default TreeNode;

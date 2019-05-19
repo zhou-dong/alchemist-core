@@ -5,6 +5,9 @@ import Action from "./commons/action";
 import { ListIterator, ListIterable } from "./commons/iterators";
 import TreeNode from "./trees/binary-tree";
 
+// import D from "./examples/tree";
+// console.log(D);
+
 class Index extends Actions {
     private readonly parent: HTMLElement;
 

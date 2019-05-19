@@ -45,4 +45,8 @@ export default class Actions implements ListIterator<Action> {
     rewind(): void {
         this.cursor = 0;
     }
+
+    last(): Action {
+        return this.actions[this.size() - 1];
+    }
 }

@@ -1,48 +1,80 @@
-import HierarchyNodeDatum from "../../commons/d3/hierarchy-node-datum";
-import TreeNode, { ITreeNode } from "./tree-node";
+import HierarchyNodeDatum, { DummyNode } from "../../commons/d3/tree/binary-tree-node-datum";
+import TreeNode from "./tree-node";
 import Action from "../../commons/d3/tree/action";
 import Actions from "../../commons/actions";
 
 const [val, left, right] = ["val", "left", "right"];
 
-const cloneNodeDatum = <T>(hierarchyNodeDatum: HierarchyNodeDatum<T>): HierarchyNodeDatum<T> => {
-    const { name, children } = hierarchyNodeDatum;
-    if (children) {
-        return { name, children: children.slice(0) };
-    } else {
-        return { name };
+// Maybe I should find a way to optimize it
+const clearClasses = (root: HierarchyNodeDatum) => {
+    if (root instanceof DummyNode) {
+        return;
     }
+    if (root.name === "dummy") {
+        return;
+    }
+    root.classes = [];
+    root.children.forEach(clearClasses);
+};
+
+// Maybe I should find a way to optimize it
+// Why didn't use HashTable: 
+//    - JSON.parse(JSON.stringify(snapshots[snapshots.length - 1]))
+//    - ^^^
+const getTarget = (root: HierarchyNodeDatum, targetId: string): HierarchyNodeDatum | undefined => {
+    if (root.id === targetId) {
+        return root;
+    }
+
+    for (let i = 0; i < root.children.length; i++) {
+        const target = getTarget(root.children[i], targetId);
+        if (target) {
+            return target;
+        }
+    }
+
+    return undefined;
 };
 
 const addSnapshot = <T>(
     treeNode: TreeNode<T>,
+    snapshots: HierarchyNodeDatum[],
     actions: Actions,
-    parentId: string,
-    callback: (clonedHierarchyNodeDatum: HierarchyNodeDatum<T>) => any
+    parent: HTMLElement,
+    callback: (clonedHierarchyNodeDatum: HierarchyNodeDatum) => any
 ) => {
-    const cloned = cloneNodeDatum(treeNode.hierarchyNodeDatum);
-    callback(cloned);
-    actions.add(new Action(cloned, parentId));
+    const clonedRoot: HierarchyNodeDatum = JSON.parse(JSON.stringify(snapshots[snapshots.length - 1]));
+    clearClasses(clonedRoot);
+    const clonedNode = getTarget(clonedRoot, treeNode.hierarchyNodeDatum.id);
+    if (clonedNode) {
+        callback(clonedNode);
+    }
+    snapshots.push(clonedRoot);
+    actions.add(new Action(clonedRoot, parent));
 };
 
-const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<TreeNode<T>> => ({
+const proxyHandler = <T>(
+    snapshots: HierarchyNodeDatum[],
+    actions: Actions,
+    parent: HTMLElement
+): ProxyHandler<TreeNode<T>> => ({
     get: function (target, propertyKey, receiver) {
         switch (propertyKey) {
             case val: {
-                addSnapshot(target, actions, parentId, cloned => {
-                    // TODO
+                addSnapshot(target, snapshots, actions, parent, cloned => {
+                    cloned.classes.push("target");
                 });
                 break;
             }
             case left: {
-                addSnapshot(target, actions, parentId, cloned => {
-                    // TODO
+                addSnapshot(target, snapshots, actions, parent, cloned => {
+                    cloned.classes.push("target");
                 });
                 break;
             }
             case right: {
-                addSnapshot(target, actions, parentId, cloned => {
-                    // TODO
+                addSnapshot(target, snapshots, actions, parent, cloned => {
+                    cloned.classes.push("target");
                 });
                 break;
             }
@@ -52,22 +84,27 @@ const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<Tre
     set: function (target, propertyKey, value, receiver) {
         switch (propertyKey) {
             case val: {
-                addSnapshot(target, actions, parentId, cloned => cloned.name = value);
+                addSnapshot(target, snapshots, actions, parent, cloned => {
+                    cloned.name = value;
+                    cloned.classes.push("target");
+                });
                 break;
             }
             case left: {
-                addSnapshot(target, actions, parentId, cloned => {
-                    if (!cloned.children)
-                        cloned.children = [];
-                    cloned.children[0] = value;
+                addSnapshot(target, snapshots, actions, parent, cloned => {
+                    const treeNode: TreeNode<T> = (value as any);
+                    cloned.classes.push("target");
+                    treeNode.hierarchyNodeDatum.classes.push("new-added");
+                    cloned.children[0] = treeNode.hierarchyNodeDatum;
                 });
                 break;
             }
             case right: {
-                addSnapshot(target, actions, parentId, cloned => {
-                    if (!cloned.children)
-                        cloned.children = [];
-                    cloned.children[1] = value;
+                addSnapshot(target, snapshots, actions, parent, cloned => {
+                    const treeNode: TreeNode<T> = (value as any);
+                    cloned.classes.push("target");
+                    treeNode.hierarchyNodeDatum.classes.push("new-added");
+                    cloned.children[1] = treeNode.hierarchyNodeDatum;
                 });
                 break;
             }
@@ -77,7 +114,7 @@ const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<Tre
     deleteProperty: function (target, propertyKey) {
         switch (propertyKey) {
             case left: {
-                addSnapshot(target, actions, parentId, cloned => {
+                addSnapshot(target, snapshots, actions, parent, cloned => {
                     if (cloned.children) {
                         delete cloned.children[0];
                     }
@@ -85,7 +122,7 @@ const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<Tre
                 break;
             }
             case right: {
-                addSnapshot(target, actions, parentId, cloned => {
+                addSnapshot(target, snapshots, actions, parent, cloned => {
                     if (cloned.children) {
                         delete cloned.children[1];
                     }
@@ -97,6 +134,12 @@ const proxyHandler = <T>(actions: Actions, parentId: string, ): ProxyHandler<Tre
     }
 });
 
-export default <T>(val: T, actions: Actions, parentId: string): ITreeNode<T> => {
-    return new Proxy(new TreeNode(val), proxyHandler(actions, parentId));
+export default <T>(val: T, snapshots: HierarchyNodeDatum[], actions: Actions, parent: HTMLElement): TreeNode<T> => {
+    const treeNode = new TreeNode(val);
+    if (snapshots.length === 0) {
+        treeNode.hierarchyNodeDatum.classes.push("new-added");
+        snapshots.push(treeNode.hierarchyNodeDatum);
+        actions.add(new Action(treeNode.hierarchyNodeDatum, parent));
+    }
+    return new Proxy(treeNode, proxyHandler(snapshots, actions, parent));
 }
