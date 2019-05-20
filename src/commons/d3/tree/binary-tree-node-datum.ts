@@ -1,8 +1,10 @@
 import HierarchyNodeDatum from "../hierarchy-node-datum";
 
+export const DummyNodeName = "dummy";
+
 export class DummyNode extends HierarchyNodeDatum<string>{
     constructor() {
-        super("dummy")
+        super(DummyNodeName);
         this.classes.push("dummy-node");
         this.classes.push("hidden");
     }

@@ -1,4 +1,4 @@
-import HierarchyNodeDatum, { DummyNode } from "../../commons/d3/tree/binary-tree-node-datum";
+import HierarchyNodeDatum, { DummyNode, DummyNodeName } from "../../commons/d3/tree/binary-tree-node-datum";
 import TreeNode from "./tree-node";
 import Action from "../../commons/d3/tree/action";
 import Actions from "../../commons/actions";
@@ -7,20 +7,17 @@ const [val, left, right] = ["val", "left", "right"];
 
 // Maybe I should find a way to optimize it
 const clearClasses = (root: HierarchyNodeDatum) => {
-    if (root instanceof DummyNode) {
+    if (root instanceof DummyNode || root.name === DummyNodeName) {
         return;
     }
-    if (root.name === "dummy") {
-        return;
-    }
+
     root.classes = [];
     root.children.forEach(clearClasses);
 };
 
 // Maybe I should find a way to optimize it
-// Why didn't use HashTable: 
-//    - JSON.parse(JSON.stringify(snapshots[snapshots.length - 1]))
-//    - ^^^
+// If want to use: JSON.parse(JSON.stringify(snapshots[snapshots.length - 1]))
+// then HashTable will not works.
 const getTarget = (root: HierarchyNodeDatum, targetId: string): HierarchyNodeDatum | undefined => {
     if (root.id === targetId) {
         return root;
