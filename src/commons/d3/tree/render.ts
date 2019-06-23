@@ -6,6 +6,8 @@ import HierarchyNodeDatum from "../hierarchy-node-datum";
 // const margin = { top: 40, right: 90, bottom: 50, left: 90 };
 const margin = { top: 30, right: 20, bottom: 30, left: 20 };
 
+const circleRadius = 12
+
 const getClientSize = (parent: HTMLElement) => {
     const width = parent.clientWidth - margin.left - margin.right;
     const height = parent.clientHeight - margin.top - margin.bottom;
@@ -69,22 +71,28 @@ export default <T>(data: HierarchyNodeDatum<T>, parent: HTMLElement) => {
         .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
 
     // adds the circle to the node
-    node.append("circle").attr("r", 10);
+    node.append("circle")
+        .style("fill", "yellow")
+        .style("stroke", "yellow")
+        .attr("r", circleRadius);
 
     // adds the text to the node
     node.append("text")
-        .attr("dy", ".35em")
-        .attr("y", function (d) { return d.children ? -20 : 20; })
+        // .attr("dy", ".35em")
+        // .attr("y", function (d) { return d.children ? -20 : 20; })
+        .attr("y", 4)
         .style("text-anchor", "middle")
         .text(d => (d.data as any).name)
 
     node.selectAll(".target circle")
-        .attr("r", 15)
+        .attr("r", circleRadius)
+        .style("fill", "green")
         .style("stroke", "green")
 
     node.selectAll(".new-added circle")
         .transition()
-        .attr("r", 15)
+        .attr("r", circleRadius)
+        .style("fill", "green")
         .style("stroke", "green")
         .ease(d3.easeBounce)
         .duration(400);
